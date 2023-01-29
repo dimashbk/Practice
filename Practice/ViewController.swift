@@ -12,44 +12,29 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
     
     
     @IBOutlet weak var table: UITableView!
-    let sessionConf = URLSessionConfiguration.default
-    let session = URLSession.shared
-    let decoder = JSONDecoder()
-    
     var postArr = [Post]()
+    let networkManager = NetworkManager()
     override func viewDidLoad() {
         super.viewDidLoad()
-        obtainPost()
+//        obtainPost()
         table.delegate = self
         table.dataSource = self
-    }
-    
-    
-    func obtainPost(){
-        guard let url = URL(string: "https://jsonplaceholder.typicode.com/posts") else
-        {
-            return
-        }
-        let urlRequest = URLRequest(url: url)
-        
-        session.dataTask(with: url) { [weak self] data, response, error in
-            guard let strongSelf = self else { return }
-            if let data = data, error == nil{
-                guard let posts = try? strongSelf.decoder.decode( [Post].self, from: data) else{
-                    return
-                }
-                strongSelf.postArr =  posts
-                print(posts.count)
+        networkManager.obtainPost { [weak self] (result) in
+            switch result{
+            case .success(let posts):
+                self?.postArr = posts
                 DispatchQueue.main.async {
-                    strongSelf.table.reloadData()
+                    self?.table.reloadData()
                 }
-            }else{
-                print("hui")
+            case .failure(let error):
+                print(error.localizedDescription)
             }
             
-        }.resume()
+        }
     }
-        
+    
+    
+
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return postArr.count
         }

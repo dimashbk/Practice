@@ -15,6 +15,7 @@ enum ObtainPostsResult{
 class NetworkManager{
 //    let sessionConf = URLSessionConfiguration.default
     let session = URLSession.shared
+    
     let decoder = JSONDecoder()
     
     func obtainPost(completion: @escaping(ObtainPostsResult) -> Void){

@@ -19,6 +19,7 @@ class ViewController: UIViewController, UITableViewDelegate,UITableViewDataSourc
 //        obtainPost()
         table.delegate = self
         table.dataSource = self
+        
         networkManager.obtainPost { [weak self] (result) in
             switch result{
             case .success(let posts):

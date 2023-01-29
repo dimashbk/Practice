@@ -13,24 +13,22 @@ enum ObtainPostsResult{
 }
 
 class NetworkManager{
-    let sessionConf = URLSessionConfiguration.default
+//    let sessionConf = URLSessionConfiguration.default
     let session = URLSession.shared
     let decoder = JSONDecoder()
     
     func obtainPost(completion: @escaping(ObtainPostsResult) -> Void){
         
         guard let url = URL(string: "https://jsonplaceholder.typicode.com/posts") else { return }
-        let urlRequest = URLRequest(url: url)
+//        let urlRequest = URLRequest(url: url)
         
         session.dataTask(with: url) { [weak self] data, response, error in
             
             var result: ObtainPostsResult
-            
             guard let strongSelf = self else { return }
+            
             if let data = data, error == nil{
-                guard let posts = try? strongSelf.decoder.decode( [Post].self, from: data) else{
-                    return
-                }
+                guard let posts = try? strongSelf.decoder.decode( [Post].self, from: data) else { return }
                 result = .success(posts: posts)
             }else{
                 result = .failure(error: error!)
